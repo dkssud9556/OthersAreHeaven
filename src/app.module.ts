@@ -6,6 +6,7 @@ import config from './config';
 import { UserModule } from './user/user.module';
 import { ReportModule } from './report/report.module';
 import { ChatModule } from './chat/chat.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ChatModule } from './chat/chat.module';
     UserModule,
     ReportModule,
     ChatModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
