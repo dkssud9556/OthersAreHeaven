@@ -5,10 +5,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Room } from '../../user/domain/room';
+import { RoomEntity } from '../../user/domain/room.entity';
 
 @Entity('chat')
-export class Chat {
+export class ChatEntity {
   @PrimaryGeneratedColumn({ name: 'id' })
   id!: number;
 
@@ -18,7 +18,7 @@ export class Chat {
   @Column({ name: 'sender_email' })
   senderEmail!: string;
 
-  @ManyToOne((type) => Room, (room) => room.uuid)
+  @ManyToOne((type) => RoomEntity, (room) => room.uuid)
   @JoinColumn({ name: 'room_uuid' })
-  room!: Room;
+  room!: RoomEntity;
 }
