@@ -1,8 +1,8 @@
 import { config } from 'dotenv';
-import { User } from './user/domain/user';
-import { Room } from './user/domain/room';
-import { Report } from './report/domain/report';
-import { Chat } from './chat/domain/chat';
+import { UserEntity } from './user/domain/user.entity';
+import { RoomEntity } from './user/domain/room.entity';
+import { ReportEntity } from './report/domain/report.entity';
+import { ChatEntity } from './chat/domain/chat.entity';
 
 if (process.env.NODE_ENV !== 'production') {
   config();
@@ -15,7 +15,7 @@ export default {
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    entities: [User, Room, Report, Chat],
+    entities: [UserEntity, RoomEntity, ReportEntity, ChatEntity],
     synchronize: true,
   },
 };
