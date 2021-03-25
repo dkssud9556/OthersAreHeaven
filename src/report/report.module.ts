@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Report } from './domain/report';
+import { ReportEntity } from './domain/report.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Report])],
+  imports: [TypeOrmModule.forFeature([ReportEntity])],
 })
 export class ReportModule {}
