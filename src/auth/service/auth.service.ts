@@ -1,7 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from '../../user/service/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { SignUpRequest } from '../dto/sign.up.request';
 import { PasswordService } from './password.service';
+import { LoginRequest } from '../dto/login.request';
+import { UserEntity } from '../../user/domain/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -11,17 +14,40 @@ export class AuthService {
     private readonly passwordService: PasswordService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.findOne(email);
-    if (user && this.passwordService.match(password, user.password)) {
-      const { password, ...result } = user;
-      return result;
+  async signUp(signUpRequest: SignUpRequest) {
+    if (await this.findUserByEmail(signUpRequest.email)) {
+      throw new HttpException('User email already exist', HttpStatus.CONFLICT);
     }
-    return null;
+    const hashedPassword = await this.passwordService.hash(
+      signUpRequest.password,
+    );
+    await this.userService.save({
+      email: signUpRequest.email,
+      password: hashedPassword,
+    });
   }
 
-  async login(user) {
-    const payload = { email: user.email };
-    return {};
+  async login(loginRequest: LoginRequest) {
+    const user = await this.findUserByEmail(loginRequest.email);
+    this.validateLoginInfo(user, loginRequest);
+    return {
+      accessToken: this.jwtService.sign({ email: user.email }),
+    };
+  }
+
+  private async validateLoginInfo(
+    user: UserEntity,
+    loginRequest: LoginRequest,
+  ): Promise<void> {
+    if (
+      !user ||
+      !(await this.passwordService.match(loginRequest.password, user.password))
+    ) {
+      throw new HttpException('Invalid login info', HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  private findUserByEmail(email: string): Promise<UserEntity> {
+    return this.userService.findOne(email);
   }
 }
