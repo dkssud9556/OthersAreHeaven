@@ -16,6 +16,10 @@ export default {
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     entities: [UserEntity, RoomEntity, ReportEntity, ChatEntity],
-    synchronize: true,
+    synchronize: process.env.NODE_ENV !== 'production',
+  },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN,
   },
 };
