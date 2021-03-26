@@ -13,4 +13,12 @@ export class UserService {
   findOne(email: string): Promise<UserEntity> {
     return this.userRepository.findOne({ email });
   }
+
+  async save({ email, password }: { email: string; password: string }) {
+    const user = this.userRepository.create({
+      email,
+      password,
+    });
+    await this.userRepository.save(user);
+  }
 }
