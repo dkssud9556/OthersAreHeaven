@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { SignUpRequest } from '../dto/sign.up.request';
 import { PasswordService } from './password.service';
 import { LoginRequest } from '../dto/login.request';
-import { UserEntity } from '../../user/domain/user.entity';
+import { UserDocument } from '../../user/schema/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -29,14 +29,14 @@ export class AuthService {
 
   async login(loginRequest: LoginRequest) {
     const user = await this.findUserByEmail(loginRequest.email);
-    this.validateLoginInfo(user, loginRequest);
+    await this.validateLoginInfo(user, loginRequest);
     return {
       accessToken: this.jwtService.sign({ email: user.email }),
     };
   }
 
   private async validateLoginInfo(
-    user: UserEntity,
+    user: UserDocument,
     loginRequest: LoginRequest,
   ): Promise<void> {
     if (
@@ -47,7 +47,7 @@ export class AuthService {
     }
   }
 
-  private findUserByEmail(email: string): Promise<UserEntity> {
+  private findUserByEmail(email: string): Promise<UserDocument> {
     return this.userService.findOne(email);
   }
 }

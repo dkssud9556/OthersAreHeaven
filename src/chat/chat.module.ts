@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ChatEntity } from './domain/chat.entity';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Chat, ChatSchema } from './schema/chat.schema';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ChatEntity])],
+  imports: [
+    MongooseModule.forFeature([{ name: Chat.name, schema: ChatSchema }]),
+  ],
 })
 export class ChatModule {}
