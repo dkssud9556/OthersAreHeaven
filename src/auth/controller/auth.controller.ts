@@ -14,7 +14,6 @@ export class AuthController {
   }
 
   @Post()
-  @Bind(Req())
   login(@Body() loginRequest: LoginRequest) {
     return this.authService.login(loginRequest);
   }
