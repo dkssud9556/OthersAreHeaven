@@ -7,11 +7,11 @@ import { Model } from 'mongoose';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  findOne(email: string) {
+  findOne(email: string): Promise<UserDocument> {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async save(userInfo: { email: string; password: string }) {
+  async save(userInfo: { email: string; password: string }): Promise<void> {
     const user = new this.userModel(userInfo);
     await user.save();
   }
