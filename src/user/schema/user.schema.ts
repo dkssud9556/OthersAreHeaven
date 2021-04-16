@@ -16,6 +16,9 @@ export class User {
 
   @Prop({ type: Types.ObjectId })
   roomId: string;
+
+  @Prop()
+  socketId: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
