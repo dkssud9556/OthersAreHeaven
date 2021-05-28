@@ -5,6 +5,7 @@ import { SignUpRequest } from '../dto/sign.up.request';
 import { PasswordService } from './password.service';
 import { LoginRequest } from '../dto/login.request';
 import { UserDocument } from '../../user/schema/user.schema';
+import config from '../../config';
 
 @Injectable()
 export class AuthService {
@@ -33,6 +34,10 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign({ email: user.email }),
     };
+  }
+
+  validateToken(token: string) {
+    return this.jwtService.verifyAsync(token, { secret: config.jwt.secret });
   }
 
   private async validateLoginInfo(
