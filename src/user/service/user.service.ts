@@ -11,6 +11,14 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
+  async updateSocketId(email: string, socketId: string) {
+    await this.userModel.updateOne({ email }, { socketId });
+  }
+
+  async updateEmptySocketId(email: string) {
+    await this.userModel.updateOne({ email }, { socketId: null });
+  }
+
   async save(userInfo: { email: string; password: string }): Promise<void> {
     const user = new this.userModel(userInfo);
     await user.save();
