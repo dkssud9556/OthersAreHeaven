@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const token = context.switchToWs().getData();
+    const token = context.switchToWs().getData().token;
     const client = context.switchToWs().getClient();
     return this.authService
       .validateToken(token)
