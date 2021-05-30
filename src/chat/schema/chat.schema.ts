@@ -5,9 +5,6 @@ export type ChatDocument = Chat & Document;
 
 @Schema()
 export class Chat {
-  @Prop({ type: Types.ObjectId, required: true })
-  id: string;
-
   @Prop({ required: true })
   content: string;
 
@@ -15,7 +12,7 @@ export class Chat {
   senderEmail: string;
 
   @Prop({ required: true })
-  roomName: string;
+  roomId: string;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);
