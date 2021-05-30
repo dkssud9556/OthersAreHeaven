@@ -44,7 +44,7 @@ export class ChatGateway
   @SubscribeMessage('AUTHENTICATION')
   async handleAuthentication(@ConnectedSocket() client: Socket) {
     await this.userService.updateSocketId(client.request.email, client.id);
-    client.emit('AUTHENTICATED');
+    client.emit('AUTHENTICATED', { email: client.request.email });
   }
 
   async handleDisconnect(client: Socket) {
