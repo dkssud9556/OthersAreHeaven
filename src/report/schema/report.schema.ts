@@ -5,7 +5,7 @@ export type ReportDocument = Report & Document;
 
 @Schema()
 export class Report {
-  @Prop({ type: Types.ObjectId, required: true })
+  @Prop({ required: true })
   roomId: string;
 
   @Prop({ required: true })
