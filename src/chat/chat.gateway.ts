@@ -110,11 +110,13 @@ export class ChatGateway
   ) {
     const user = await this.userService.findOne(client.request.email);
     if (user.roomId) {
+      client.leaveAll();
       this.server.to(user.roomId).emit('RECEIVE_MESSAGE', {
         content: '상대방이 떠났습니다.',
         senderEmail: 'system',
         roomId: user.roomId,
       });
+      this.server.to(user.roomId).emit('OPPOSITE_LEAVE');
       await this.userService.updateEmptyRoomId(client.request.email);
     }
   }
