@@ -11,6 +11,12 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
+  findMatchingUsers(): Promise<UserDocument[]> {
+    return this.userModel
+      .find({ roomId: null, socketId: { $ne: null } })
+      .exec();
+  }
+
   async updateSocketId(email: string, socketId: string) {
     await this.userModel.updateOne({ email }, { socketId });
   }
@@ -19,8 +25,16 @@ export class UserService {
     await this.userModel.updateOne({ email }, { socketId: null });
   }
 
+  async updateRoomId(emails: string[], roomId: string) {
+    await this.userModel.updateMany({ email: { $in: emails } }, { roomId });
+  }
+
   async save(userInfo: { email: string; password: string }): Promise<void> {
     const user = new this.userModel(userInfo);
     await user.save();
+  }
+
+  async updateEmptyRoomId(email: string) {
+    await this.userModel.updateOne({ email }, { roomId: null });
   }
 }
