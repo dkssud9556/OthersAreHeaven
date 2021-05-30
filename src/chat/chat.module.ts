@@ -5,6 +5,7 @@ import { ChatGateway } from './chat.gateway';
 import { AuthModule } from '../auth/auth.module';
 import { AuthGuard } from './auth.guard';
 import { UserModule } from '../user/user.module';
+import { ChatService } from './service/chat.service';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { UserModule } from '../user/user.module';
     AuthModule,
     UserModule,
   ],
-  providers: [ChatGateway, AuthGuard],
+  providers: [ChatGateway, AuthGuard, ChatService],
 })
 export class ChatModule {}
