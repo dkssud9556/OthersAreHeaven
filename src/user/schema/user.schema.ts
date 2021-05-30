@@ -14,7 +14,7 @@ export class User {
   @Prop({ required: true, default: false })
   isSuspended: boolean;
 
-  @Prop({ type: Types.ObjectId })
+  @Prop()
   roomId: string;
 
   @Prop()
