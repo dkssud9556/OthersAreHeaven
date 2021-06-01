@@ -7,13 +7,20 @@ import { Model } from 'mongoose';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
+  async initSocketIdAndRoomId() {
+    await this.userModel.updateMany(
+      {},
+      { $set: { socketId: null, roomId: null } },
+    );
+  }
+
   findOne(email: string): Promise<UserDocument> {
     return this.userModel.findOne({ email }).exec();
   }
 
   findMatchingUsers(): Promise<UserDocument[]> {
     return this.userModel
-      .find({ roomId: null, socketId: { $ne: null } })
+      .find({ $and: [{ roomId: null }, { socketId: { $ne: null } }] })
       .exec();
   }
 
@@ -36,5 +43,9 @@ export class UserService {
 
   async updateEmptyRoomId(email: string) {
     await this.userModel.updateOne({ email }, { roomId: null });
+  }
+
+  findOneByRoomId(roomId: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ roomId }).exec();
   }
 }
