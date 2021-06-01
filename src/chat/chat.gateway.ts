@@ -48,51 +48,46 @@ export class ChatGateway
   }
 
   async handleDisconnect(client: Socket) {
-    const user = await this.userService.findOne(client.request.email);
-    console.log('handle disconnect', user);
-    if (user.roomId !== null) {
-      this.server.to(user.roomId).emit('RECEIVE_MESSAGE', {
-        content: '상대방이 떠났습니다.',
-        senderEmail: 'system',
-        roomId: user.roomId,
-      });
-      await this.userService.updateEmptyRoomId(client.request.email);
+    if (client.request.email) {
+      const user = await this.userService.findOne(client.request.email);
+      if (user.roomId !== null) {
+        this.server.to(user.roomId).emit('RECEIVE_MESSAGE', {
+          content: '상대방이 떠났습니다.',
+          senderEmail: 'system',
+          roomId: user.roomId,
+        });
+        this.server.to(user.roomId).emit('OPPOSITE_LEAVE');
+        await this.userService.updateEmptyRoomId(client.request.email);
+      }
+      await this.userService.updateEmptySocketId(client.request.email);
     }
-    await this.userService.updateEmptySocketId(client.request.email);
   }
 
   async afterInit(server: Server) {
     await this.userService.initSocketIdAndRoomId();
-    try {
-      while (true) {
-        const users = await this.userService.findMatchingUsers();
-        console.log(users);
-        if (users.length > 1) {
-          const first = Math.floor(Math.random() * users.length);
-          let second = Math.floor(Math.random() * users.length);
-          while (first === second)
-            second = Math.floor(Math.random() * users.length);
-          const room = await this.roomService.save();
-          await this.userService.updateRoomId(
-            [users[first].email, users[second].email],
-            room.id,
-          );
-          server.sockets.sockets[users[first].socketId].join(room.id);
-          server.sockets.sockets[users[second].socketId].join(room.id);
-          server.sockets.to(room.id).emit('MATCHED');
-        }
-        await delay(3000);
+    while (true) {
+      const users = await this.userService.findMatchingUsers();
+      if (users.length > 1) {
+        const first = Math.floor(Math.random() * users.length);
+        let second = Math.floor(Math.random() * users.length);
+        while (first === second)
+          second = Math.floor(Math.random() * users.length);
+        const room = await this.roomService.save();
+        await this.userService.updateRoomId(
+          [users[first].email, users[second].email],
+          room.id,
+        );
+        server.sockets.sockets[users[first].socketId].join(room.id);
+        server.sockets.sockets[users[second].socketId].join(room.id);
+        server.sockets.to(room.id).emit('MATCHED');
       }
-    } catch (e) {
-      console.log(e);
+      await delay(3000);
     }
   }
 
   @UseGuards(AuthGuard)
   @SubscribeMessage('MATCH')
-  handleMatch(client: Socket) {
-    console.log('match');
-  }
+  handleMatch(client: Socket) {}
 
   @UseGuards(AuthGuard)
   @SubscribeMessage('NEW_MESSAGE')
@@ -100,7 +95,6 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() body: any,
   ) {
-    console.log('new message', body);
     const user = await this.userService.findOne(client.request.email);
     const chat = await this.chatService.save({
       content: body.content,
@@ -119,7 +113,6 @@ export class ChatGateway
     const user = await this.userService.findOne(client.request.email);
     if (user.roomId) {
       client.leave(user.roomId, async (err) => {
-        console.log('client leave', err);
         await this.userService.updateEmptyRoomId(client.request.email);
         const opposite = await this.userService.findOneByRoomId(user.roomId);
         this.server.sockets.sockets[opposite.socketId].emit('RECEIVE_MESSAGE', {
