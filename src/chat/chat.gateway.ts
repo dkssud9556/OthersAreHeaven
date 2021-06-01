@@ -13,7 +13,10 @@ import { AuthGuard } from './auth.guard';
 import { UserService } from '../user/service/user.service';
 import { RoomService } from '../user/service/room.service';
 import { ChatService } from './service/chat.service';
-import { delay } from '@xquare/utils';
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 @WebSocketGateway({
   transports: ['websocket'],
