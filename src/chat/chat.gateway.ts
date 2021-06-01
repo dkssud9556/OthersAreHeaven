@@ -1,7 +1,6 @@
 import {
   ConnectedSocket,
   MessageBody,
-  OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
@@ -20,8 +19,7 @@ import { delay } from '@xquare/utils';
   transports: ['websocket'],
   origins: '*:*',
 })
-export class ChatGateway
-  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
+export class ChatGateway implements OnGatewayDisconnect, OnGatewayInit {
   constructor(
     private readonly userService: UserService,
     private readonly roomService: RoomService,
@@ -30,8 +28,6 @@ export class ChatGateway
 
   @WebSocketServer()
   server: Server;
-
-  handleConnection(client: Socket) {}
 
   @UseGuards(AuthGuard)
   @SubscribeMessage('AUTHENTICATION')
@@ -58,10 +54,6 @@ export class ChatGateway
       await delay(3000);
     }
   }
-
-  @UseGuards(AuthGuard)
-  @SubscribeMessage('MATCH')
-  handleMatch(client: Socket) {}
 
   @UseGuards(AuthGuard)
   @SubscribeMessage('NEW_MESSAGE')
@@ -104,9 +96,6 @@ export class ChatGateway
       });
     }
   }
-
-  @SubscribeMessage('error')
-  handleError(client: Socket) {}
 
   private notifyLeaveOpposite(roomId: string): void {
     this.server.to(roomId).emit('RECEIVE_MESSAGE', {
