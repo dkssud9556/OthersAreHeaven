@@ -1320,6 +1320,11 @@
     "@webassemblyjs/wast-parser" "1.9.1"
     "@xtuc/long" "4.2.2"
 
+"@xquare/utils@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@xquare/utils/-/utils-1.0.7.tgz#9d7ec795380cdddbf39d9bfeefc8f958b4f19f44"
+  integrity sha512-dnl59LyHAeugrg6LaMr5vSZdJ7lopZJE0yPJ8Va+a/qASSJXGBXMQwdL9mDMY5KChsOHaaxf0egxFMv2yf8uhQ==
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@xtuc/ieee754/-/ieee754-1.2.0.tgz"
